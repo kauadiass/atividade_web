@@ -1,10 +1,16 @@
+// ALUNO: Kauã
 class Library {
   constructor() {
-    this.bks = [];
+    this.bks = []; // SMELL: Nome obscuro
     this.us = [];
     this.lns = [];
   }
 
+  // SMELL: Long Function
+  // SMELL: Switch sobre tipo
+  // VIOLA: S
+  // VIOLA: O
+  // VIOLA: D
   doStuff(book, userId, action) {
     if (action === 'add') {
       this.bks.push(book);
@@ -24,13 +30,13 @@ class Library {
       }
       if (u != null && b != null && b.cp > 0) {
         b.cp = b.cp - 1;
-        this.lns.push({ uid: userId, bt: book.t, d: new Date(), st: 1 });
+        this.lns.push({ uid: userId, bt: book.t, d: new Date(), st: 1 }); // SMELL: Primitive Obsession
         fetch('http://email.api/send', {
           method: 'POST',
           body: JSON.stringify({ to: u.em, msg: 'Você pegou ' + book.t }),
         })
           .then((r) => {})
-          .catch((e) => {});
+          .catch((e) => {}); // SMELL: Erro engolido
       }
     } else if (action === 'return') {
       for (var k = 0; k < this.lns.length; k++) {
@@ -40,7 +46,7 @@ class Library {
           this.lns[k].st === 1
         ) {
           this.lns[k].st = 2;
-          for (var m = 0; m < this.bks.length; m++) {
+          for (var m = 0; m < this.bks.length; m++) { // SMELL: Duplicate Code
             if (this.bks[m].t === book.t) {
               this.bks[m].cp = this.bks[m].cp + 1;
             }
@@ -50,7 +56,7 @@ class Library {
     } else if (action === 'overdue') {
       for (var n = 0; n < this.lns.length; n++) {
         var diff = (new Date() - this.lns[n].d) / (1000 * 60 * 60 * 24);
-        if (this.lns[n].st === 1 && diff > 7) {
+        if (this.lns[n].st === 1 && diff > 7) { // SMELL: Magic Number
           this.lns[n].st = 3;
           var usr = null;
           for (var p = 0; p < this.us.length; p++) {
@@ -69,6 +75,8 @@ class Library {
     }
   }
 
+  // SMELL: Long Parameter List
+  // SMELL: Data Clumps
   registerUser(n, e, ph, addr, cty, st, zp, isAdm) {
     this.us.push({
       id: this.us.length + 1,
@@ -83,6 +91,7 @@ class Library {
     });
   }
 
+  // SMELL: Switch sobre tipo
   report(type) {
     if (type === 1) {
       console.log('Total de livros: ' + this.bks.length);
